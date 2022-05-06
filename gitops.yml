@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-gitops
+  namespace: gitops
+  annotations:
+    kubernetes.io/change-cause: deployment 1.0.0
+spec:
+  selector:
+    matchLabels:
+      app: app-gitops
+  template:
+    metadata:
+      labels:
+        app: app-gitops
+    spec:
+      containers:
+      - name: container-gitops
+        image: timpamungkas/gitops:1.0.0
+        env:
+        - name: TZ
+          value: "Asia/Jakarta"
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: 300M 
+            cpu: 1
+        livenessProbe:
+          httpGet:
+            path: /one
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+  replicas: 1
+  minReadySeconds: 3
+  progressDeadlineSeconds: 120
+    
